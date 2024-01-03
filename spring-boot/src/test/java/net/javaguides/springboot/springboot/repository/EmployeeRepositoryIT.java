@@ -10,11 +10,13 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import net.javaguides.springboot.springboot.integration.AbstractContainerBaseTest;
 import net.javaguides.springboot.springboot.model.Employee;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
-public class EmployeeRepositoryIT {
+//public class EmployeeRepositoryIT extends AbstractContainerBaseTest {
+public class EmployeeRepositoryIT  {
 
     @Autowired
     private EmployeeRepository employeeRepository;
