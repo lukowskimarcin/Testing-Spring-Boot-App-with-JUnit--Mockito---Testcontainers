@@ -8,14 +8,32 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import reactor.core.publisher.Flux;
+import org.testcontainers.containers.MongoDBContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+
 import reactor.core.publisher.Mono;
 
 import java.util.Collections;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+//@SpringBootTest
+@Testcontainers
 public class EmployeeControllerIntegrationTests {
+
+    /*
+    @Container
+    private static MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:6.0").withExposedPorts(27000);
+
+    @DynamicPropertySource
+    static void mongoDbProperties(DynamicPropertyRegistry registry) {
+        mongoDBContainer.start();
+        registry.add("spring.data.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
+    }
+    */
 
     @Autowired
     private EmployeeService employeeService;
@@ -27,13 +45,13 @@ public class EmployeeControllerIntegrationTests {
     private EmployeeRepository employeeRepository;
 
     @BeforeEach
-    public void before(){
+    public void before() {
         System.out.println("Before Each Test");
         employeeRepository.deleteAll().subscribe();
     }
 
     @Test
-    public void testSaveEmployee(){
+    public void testSaveEmployee() {
 
         EmployeeDto employeeDto = new EmployeeDto();
         employeeDto.setFirstName("John");
@@ -54,7 +72,7 @@ public class EmployeeControllerIntegrationTests {
     }
 
     @Test
-    public void testGetSingleEmployee(){
+    public void testGetSingleEmployee() {
 
         EmployeeDto employeeDto = new EmployeeDto();
         employeeDto.setFirstName("Meena");
@@ -63,7 +81,7 @@ public class EmployeeControllerIntegrationTests {
 
         EmployeeDto savedEmployee = employeeService.saveEmployee(employeeDto).block();
 
-        webTestClient.get().uri("/api/employees/{id}", Collections.singletonMap("id",savedEmployee.getId()))
+        webTestClient.get().uri("/api/employees/{id}", Collections.singletonMap("id", savedEmployee.getId()))
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
@@ -75,7 +93,7 @@ public class EmployeeControllerIntegrationTests {
     }
 
     @Test
-    public void testGetAllEmployees(){
+    public void testGetAllEmployees() {
 
         EmployeeDto employeeDto = new EmployeeDto();
         employeeDto.setFirstName("John");
@@ -100,7 +118,7 @@ public class EmployeeControllerIntegrationTests {
     }
 
     @Test
-    public void testUpdateEmployee(){
+    public void testUpdateEmployee() {
 
         EmployeeDto employeeDto = new EmployeeDto();
         employeeDto.setFirstName("Ramesh");
@@ -128,7 +146,7 @@ public class EmployeeControllerIntegrationTests {
     }
 
     @Test
-    public void testDeleteEmployee(){
+    public void testDeleteEmployee() {
 
         EmployeeDto employeeDto = new EmployeeDto();
         employeeDto.setFirstName("Ramesh");
